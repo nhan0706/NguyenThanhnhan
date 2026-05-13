@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Index 6</title>
+</head>
+<body>
+    <ul>
+        <li>Xin chào bạn đến với hệ thống {{ $data }}</li>
+        <li>Value: {{ $param1 }} - {{ $param2 }}</li>
+    </ul>
+</body>
+</html>
