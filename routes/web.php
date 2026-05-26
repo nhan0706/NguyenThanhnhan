@@ -22,14 +22,17 @@ Route::get('/demo3', [DemoController::class, 'index3']);
 Route::get('/demo4/{id}', [DemoController::class, 'index4']);
 Route::get('/demo5/{id?}', [DemoController::class, 'index5']);
 Route::get('/demo6/{param1}/{param2}', [DemoController::class, 'index6']);
-Route::resource('admin/category',CategoryController::class);
-Route::resource('admin/brand',BrandController::class);
-Route::resource('admin/post',PostController::class);
-Route::resource('admin/product',ProductController::class);
-Route::resource('admin/user',UserController::class);
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.home');
+Route::prefix('admin')->group(function () {
+    Route::resource('category', CategoryController::class);
+    Route::resource('brand', BrandController::class);
+    Route::resource('post', PostController::class);
+    Route::resource('product', ProductController::class);
+    Route::resource('user', UserController::class);
+    
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.home');
+});
 
 Route::get('/test1', [ProductController::class, 'test1']);
 Route::get('/test2', [ProductController::class, 'test2']);
