@@ -12,7 +12,19 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $list = \Illuminate\Support\Facades\DB::table('posts')
+            ->join('users', 'posts.user_id', '=', 'users.id')
+            ->select(
+                'posts.id',
+                'posts.title',
+                'posts.image',
+                'posts.status',
+                'users.fullname'
+            )
+            ->orderBy('posts.title')
+            ->get();
+
+        return view('admin.posts.index', compact('list'));
     }
 
     /**

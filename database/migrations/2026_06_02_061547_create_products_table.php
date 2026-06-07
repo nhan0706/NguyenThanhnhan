@@ -21,11 +21,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
-            // khóa ngoại với bảng brands
-            $table->unsignedInteger('brandid')->nullable();
-            $table->foreign('brandid')
-                  ->references('id')
-                  ->on('brands')
+            //
+            $table->foreignId('brandid')
+                  ->nullable()
+                  ->constrained('brands')
                   ->nullOnDelete();
             //
             $table->unsignedInteger('cateid');
