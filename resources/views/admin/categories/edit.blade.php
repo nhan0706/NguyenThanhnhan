@@ -14,13 +14,47 @@
     
     <div class="mb-3">
         <label>Tên loại sản phẩm</label>
-        <input type="text" name="catename" class="form-control" value="{{ $category->catename }}">
+        <input type="text"
+               name="catename"
+               class="form-control"
+               value="{{ $category->catename }}">
     </div>
     
     <div class="mb-3">
         <label>Slug</label>
-        <input type="text" name="slug" class="form-control" value="{{ $category->slug }}">
+        <input type="text"
+               name="slug"
+               class="form-control"
+               value="{{ $category->slug }}">
     </div>
+
+    <div class="mb-3">
+        <label>Thứ tự sắp xếp</label>
+        <input type="number"
+               name="sort_order"
+               class="form-control"
+               value="{{ $category->sort_order }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Mô tả</label>
+        <textarea name="description"
+                  class="form-control"
+                  rows="4">{{ $category->description }}</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Trạng thái</label>
+        <select name="status" class="form-control">
+            <option value="1" {{ $category->status == 1 ? 'selected' : '' }}>
+                Hiển thị
+            </option>
+            <option value="0" {{ $category->status == 0 ? 'selected' : '' }}>
+                Ẩn
+            </option>
+        </select>
+    </div>
+    
     
     <button type="submit" class="btn btn-primary">
         Cập nhật

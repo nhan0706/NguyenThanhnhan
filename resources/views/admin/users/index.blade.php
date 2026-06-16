@@ -7,7 +7,9 @@
 {{-- Gán nội dung cho vùng section 'content' --}}
 @section('content')
 <h2 class="mb-3">DANH SÁCH NGƯỜI DÙNG</h2>
-
+<a href="{{ route('user.create') }}" class="btn btn-success mb-3">
+    + Thêm mới
+</a>
 <table class="table table-bordered table-hover table-striped">
     <thead class="table-dark">
         <tr>
@@ -20,6 +22,7 @@
             <th>Ảnh đại diện</th>
             <th>Vai trò</th>
             <th>Trạng thái</th>
+            <th>Chức Năng</th>
         </tr>
     </thead>
     <tbody>
@@ -53,4 +56,8 @@
         @endforeach
     </tbody>
 </table>
+
+<div class="d-flex justify-content-center">
+    {{ $list->links() }}
+</div>
 @endsection

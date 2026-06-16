@@ -4,28 +4,50 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Product;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    // public function index()
+    // {
+    //     $list = DB::table('products')
+    //         ->join('categories', 'products.cateid', '=', 'categories.cateid')
+    //         ->leftJoin('brands', 'products.brandid', '=', 'brands.id')
+    //         ->select(
+    //             'products.id',
+    //             'products.productname',
+    //             'products.price',
+    //             'products.image',
+    //             'products.status',
+    //             'categories.catename',
+    //             'brands.brandname'
+    //         )
+    //         ->orderBy('products.productname')
+    //         ->get();
+
+    //     return view('admin.products.index', compact('list'));
+    // }
+        public function index($limit = 10)
     {
-        $list = \Illuminate\Support\Facades\DB::table('products')
-            ->join('categories', 'products.cateid', '=', 'categories.cateid')
-            ->leftJoin('brands', 'products.brandid', '=', 'brands.id')
-            ->select(
-                'products.id',
-                'products.productname',
-                'products.price',
-                'products.image',
-                'products.status',
-                'categories.catename',
-                'brands.brandname'
-            )
-            ->orderBy('products.productname')
-            ->get();
+        $list = Product::with([
+            'category:cateid,catename',
+            'brand:id,brandname'
+        ])
+        ->select(
+            'id',
+            'productname',
+            'price',
+            'image',
+            'status',
+            'cateid',
+            'brandid'
+        )
+        ->orderBy('productname')
+        ->paginate($limit);
 
         return view('admin.products.index', compact('list'));
     }

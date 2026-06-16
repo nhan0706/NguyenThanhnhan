@@ -7,7 +7,9 @@
 {{-- Gán nội dung cho vùng section 'content' --}}
 @section('content')
 <h2 class="mb-3">DANH SÁCH THƯƠNG HIỆU</h2>
-
+<a href="{{ route('brand.create') }}" class="btn btn-success mb-3">
+    + Thêm mới
+</a>
 <table class="table table-bordered table-hover table-striped">
     <thead class="table-dark">
         <tr>
@@ -17,6 +19,7 @@
             <th>Slug</th>
             <th>Ảnh đại diện</th>
             <th>Trạng thái</th>
+            <th>Chức năng</th>
         </tr>
     </thead>
     <tbody>
@@ -40,8 +43,20 @@
                     <span class="badge bg-danger">Ẩn</span>
                 @endif
             </td>
+            <td class="d-flex gap-1">
+                <a href="{{ route('brand.edit', $item->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                <form action="{{ route('brand.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                </form>
+            </td>
         </tr>
         @endforeach
     </tbody>
 </table>
+
+<div class="d-flex justify-content-center">
+    {{ $list->links() }}
+</div>
 @endsection

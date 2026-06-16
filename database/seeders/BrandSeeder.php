@@ -14,7 +14,7 @@ class BrandSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             $name = fake()->unique()->words(2, true);
             DB::table('brands')->insert([
                 'brandname' => ucfirst($name),

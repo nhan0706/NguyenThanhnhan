@@ -22,10 +22,12 @@ return new class extends Migration
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             //
-            $table->foreignId('brandid')
-                  ->nullable()
-                  ->constrained('brands')
-                  ->nullOnDelete();
+            $table->unsignedInteger('brandid')->nullable();
+            $table->foreign('brandid')
+                ->references('id')
+                ->on('brands')
+                ->nullOnDelete();
+
             //
             $table->unsignedInteger('cateid');
             $table->foreign('cateid')

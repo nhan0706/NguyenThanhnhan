@@ -1,49 +1,65 @@
-{{-- Thừa kế layout/view admin.blade.php --}}
+{{-- thừa kế layout/view admin.blade.php --}}
+{{-- resources/views/admin/layouts/admin.blade.php --}}
 @extends('admin.layouts.admin')
-
 {{-- Gán nội dung cho vùng section 'title' --}}
-@section('title', 'Sản phẩm')
+{{-- (tương ứng với @yield('title') trong layout --}}
+@section('title', 'Loại Sản Phẩm')
 
 {{-- Gán nội dung cho vùng section 'content' --}}
+{{-- (tương ứng với @yield('content') trong layout --}}
 @section('content')
-<h2 class="mb-3">DANH SÁCH SẢN PHẨM</h2>
+    <h2 class="mb-3">DANH SÁCH SẢN PHẨM</h2>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên sản phẩm</th>
+                <th>Loại</th>
+                <th>Thương hiệu</th>
+                <th>Giá</th>
+                <th>Trạng thái</th>
+                <th width="120">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($list as $item)
+                <tr>
+                    <td>{{ $list->firstItem() + $loop->index }}</td>
+                    <td>{{ $item->productname }}</td>
+                    <td>{{ $item->category?->catename }}</td>
+                    <td>{{ $item->brand?->brandname }}</td>
+                    <td>{{ number_format($item->price, 0) }} đ</td>
+                    <td>
+                        @if($item->status)
+                            <span class="badge bg-success">Hiện</span>
+                        @else
+                            <span class="badge bg-danger">Ẩn</span>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="{{ route('product.edit', $item->id) }}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form action="{{ route('product.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="8" class="text-center">
+                        Không có dữ liệu
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
 
-<table class="table table-bordered table-hover table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>STT</th>
-            <th>Tên sản phẩm</th>
-            <th>Hình ảnh</th>
-            <th>Giá</th>
-            <th>Danh mục</th>
-            <th>Thương hiệu</th>
-            <th>Trạng thái</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($list as $index => $item)
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $item->productname }}</td>
-            <td>
-                @if($item->image)
-                    <img src="{{ asset('images/' . $item->image) }}" alt="Image" width="50">
-                @else
-                    <img src="{{ asset('images/default.png') }}" alt="Default" width="50">
-                @endif
-            </td>
-            <td>{{ number_format($item->price, 0, ',', '.') }} VNĐ</td>
-            <td>{{ $item->catename }}</td>
-            <td>{{ $item->brandname }}</td>
-            <td>
-                @if($item->status == 1)
-                    <span class="badge bg-success">Hiển thị</span>
-                @else
-                    <span class="badge bg-danger">Ẩn</span>
-                @endif
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+    <div class="d-flex justify-content-center">
+        {{ $list->links() }}
+    </div>
 @endsection

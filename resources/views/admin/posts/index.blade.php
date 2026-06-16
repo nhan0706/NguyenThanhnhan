@@ -21,7 +21,7 @@
     <tbody>
         @foreach($list as $index => $item)
         <tr>
-            <td>{{ $index + 1 }}</td>
+            <td>{{ ($list->currentPage() - 1) * $list->perPage() + $index + 1 }}</td>
             <td>{{ $item->title }}</td>
             <td>
                 @if($item->image)
@@ -30,7 +30,7 @@
                     <img src="{{ asset('images/default.png') }}" alt="Default" width="50">
                 @endif
             </td>
-            <td>{{ $item->fullname }}</td>
+            <td>{{ $item->user->fullname ?? 'N/A' }}</td>
             <td>
                 @if($item->status == 1)
                     <span class="badge bg-success">Hiển thị</span>
@@ -42,4 +42,8 @@
         @endforeach
     </tbody>
 </table>
+
+<div class="d-flex justify-content-center">
+    {{ $list->links() }}
+</div>
 @endsection
