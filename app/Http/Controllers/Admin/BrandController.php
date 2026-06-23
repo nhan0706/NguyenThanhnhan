@@ -42,16 +42,23 @@ public function index($limit = 10)
      */
     public function store(Request $request)
     {
-    $brand = Brand::create([
-        'brandname'  => $request->brandname,
-        'slug'       => $request->slug,
-        'status'     => $request->status,
-        'sort_order' => $request->sort_order,
-        'description'=> $request->description,
-    ]);
+        try {
+            Brand::create([
+                'brandname'  => $request->brandname,
+                'slug'       => $request->slug,
+                'status'     => $request->status,
+                'sort_order' => $request->sort_order,
+                'description'=> $request->description,
+            ]);
 
-    return redirect()->route('brand.index');
-
+            return redirect()
+                ->route('admin.brand.index')
+                ->with('success', 'Thêm thương hiệu thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -67,30 +74,46 @@ public function index($limit = 10)
      */
     public function edit(string $id)
     {
-        //
+        $brand = Brand::find($id);
+        if (!$brand) {
+            return redirect()
+                ->route('admin.brand.index')
+                ->with('error', 'Thương hiệu không tồn tại');
+        }
+        return view('admin.brands.edit', compact('brand'));
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-{
-    $brand = Brand::find($id);
+    {
+        try {
+            $brand = Brand::find($id);
 
-    if (!$brand) {
-        return redirect()->route('brand.index');
+            if (!$brand) {
+                return redirect()
+                    ->route('admin.brand.index')
+                    ->with('error', 'Thương hiệu không tồn tại');
+            }
+
+            $brand->update([
+                'brandname'   => $request->brandname,
+                'slug'        => $request->slug,
+                'status'      => $request->status,
+                'sort_order'  => $request->sort_order,
+                'description' => $request->description,
+            ]);
+
+            return redirect()
+                ->route('admin.brand.index')
+                ->with('success', 'Cập nhật thương hiệu thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
-
-    $brand->update([
-        'brandname'   => $request->brandname,
-        'slug'        => $request->slug,
-        'status'      => $request->status,
-        'sort_order'  => $request->sort_order,
-        'description' => $request->description,
-    ]);
-
-    return redirect()->route('brand.index');
-}
     /**
      * Remove the specified resource from storage.
      */

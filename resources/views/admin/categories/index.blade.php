@@ -8,7 +8,13 @@
 @section('content')
 <h2 class="mb-3">DANH SÁCH LOẠI SẢN PHẨM</h2>
 
-<a href="{{ route('category.create') }}" class="btn btn-success mb-3">
+@if(session('success'))
+    <div class="alert alert-success mb-3">
+        {{ session('success') }}
+    </div>
+@endif
+
+<a href="{{ route('admin.category.create') }}" class="btn btn-success mb-3">
     + Thêm mới
 </a>
 
@@ -46,8 +52,8 @@
                 @endif
             </td>
             <td class="d-flex gap-1">
-                <a href="{{ route('category.edit', $item->cateid) }}" class="btn btn-warning btn-sm">Sửa</a>
-                <form action="{{ route('category.destroy', $item->cateid) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                <a href="{{ route('admin.category.edit', $item->cateid) }}" class="btn btn-warning btn-sm">Sửa</a>
+                <form action="{{ route('admin.category.destroy', $item->cateid) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>

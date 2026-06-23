@@ -42,15 +42,24 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-       Category::create([ 
-            'catename'   => $request->catename,
-            'slug'       => $request->slug,
-            'status'     => $request->status,
-            'sort_order' => $request->sort_order,
-            'description'=> $request->description,
-        ]); 
+        try {
+            Category::create([ 
+                'catename'   => $request->catename,
+                'slug'       => $request->slug,
+                'status'     => $request->status,
+                'sort_order' => $request->sort_order,
+                'description'=> $request->description,
+            ]); 
 
-        return redirect()->route('category.index');
+            return redirect()
+                ->route('admin.category.index')
+                ->with('success', 'Thêm loại sản phẩm thành công');
+
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -66,9 +75,11 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = DB::table('categories')->where('cateid', $id)->first();
+        $category = Category::find($id);
         if (!$category) {
-            return redirect()->route('category.index');
+            return redirect()
+                ->route('admin.category.index')
+                ->with('error', 'Loại sản phẩm không tồn tại');
         }
         return view('admin.categories.edit', compact('category'));
     }
@@ -76,24 +87,35 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, string $id)
-{
-    $category = Category::find($id);
+    public function update(Request $request, string $id)
+    {
+        try {
+            $category = Category::find($id);
 
-    if (!$category) {
-        return redirect()->route('category.index');
+            if (!$category) {
+                return redirect()
+                    ->route('admin.category.index')
+                    ->with('error', 'Loại sản phẩm không tồn tại');
+            }
+
+            $category->update([
+                'catename'   => $request->catename,
+                'slug'       => $request->slug,
+                'status'     => $request->status,
+                'sort_order' => $request->sort_order,
+                'description'=> $request->description,
+            ]);
+
+            return redirect()
+                ->route('admin.category.index')
+                ->with('success', 'Cập nhật loại sản phẩm thành công');
+
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
-
-    $category->update([
-        'catename'   => $request->catename,
-        'slug'       => $request->slug,
-        'status'     => $request->status,
-        'sort_order' => $request->sort_order,
-        'description'=> $request->description,
-    ]);
-
-    return redirect()->route('category.index');
-}
 
     /**
      * Remove the specified resource from storage.
@@ -101,6 +123,6 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         DB::table('categories')->where('cateid', $id)->delete();
-        return redirect()->route('category.index');
+        return redirect()->route('admin.category.index');
     }
 }

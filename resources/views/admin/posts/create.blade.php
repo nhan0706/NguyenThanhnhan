@@ -2,11 +2,11 @@
 @extends('admin.layouts.admin')
 
 {{-- Gán nội dung cho vùng section 'title' --}}
-@section('title', 'Thêm Thương hiệu')
+@section('title', 'Thêm Bài viết')
 
 {{-- Gán nội dung cho vùng section 'content' --}}
 @section('content')
-<h2 class="mb-3">THÊM MỚI THƯƠNG HIỆU</h2>
+<h2 class="mb-3">THÊM MỚI BÀI VIẾT</h2>
 
 @if(session('error'))
     <div class="alert alert-danger mb-3">
@@ -14,15 +14,15 @@
     </div>
 @endif
 
-<form action="{{ route('admin.brand.store') }}" method="POST">
+<form action="{{ route('admin.post.store') }}" method="POST">
     @csrf
 
     <div class="mb-3">
-        <label>Tên thương hiệu</label>
+        <label>Tiêu đề</label>
         <input type="text"
-               name="brandname"
+               name="title"
                class="form-control"
-               value="{{ old('brandname') }}">
+               value="{{ old('title') }}">
     </div>
 
     <div class="mb-3">
@@ -34,18 +34,22 @@
     </div>
 
     <div class="mb-3">
-        <label>Thứ tự sắp xếp</label>
-        <input type="number"
-               name="sort_order"
-               class="form-control"
-               value="{{ old('sort_order', 0) }}">
+        <label>Nội dung</label>
+        <textarea name="content"
+                  class="form-control"
+                  rows="6">{{ old('content') }}</textarea>
     </div>
 
     <div class="mb-3">
-        <label>Mô tả</label>
-        <textarea name="description"
-                  class="form-control"
-                  rows="4">{{ old('description') }}</textarea>
+        <label>Tác giả</label>
+        <select name="user_id" class="form-control">
+            <option value="">-- Chọn tác giả --</option>
+            @foreach($users as $user)
+                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                    {{ $user->fullname }}
+                </option>
+            @endforeach
+        </select>
     </div>
 
     <div class="mb-3">
@@ -59,10 +63,6 @@
     <button type="submit" class="btn btn-primary">
         Lưu
     </button>
-
-    <a href="{{ route('admin.brand.index') }}"
-       class="btn btn-secondary">
-        Quay lại
-    </a>
+    <a href="{{ route('admin.post.index') }}" class="btn btn-secondary">Quay lại</a>
 </form>
 @endsection

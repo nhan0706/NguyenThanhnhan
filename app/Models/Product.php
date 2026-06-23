@@ -11,11 +11,12 @@ class Product extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'proname',
+        'productname',
         'cateid',
         'brandid',
         'slug',
         'price',
+        'pricediscount',
         'image',
         'status',
         'description'

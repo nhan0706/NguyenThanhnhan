@@ -7,7 +7,14 @@
 {{-- Gán nội dung cho vùng section 'content' --}}
 @section('content')
 <h2 class="mb-3">DANH SÁCH THƯƠNG HIỆU</h2>
-<a href="{{ route('brand.create') }}" class="btn btn-success mb-3">
+
+@if(session('success'))
+    <div class="alert alert-success mb-3">
+        {{ session('success') }}
+    </div>
+@endif
+
+<a href="{{ route('admin.brand.create') }}" class="btn btn-success mb-3">
     + Thêm mới
 </a>
 <table class="table table-bordered table-hover table-striped">
@@ -44,8 +51,8 @@
                 @endif
             </td>
             <td class="d-flex gap-1">
-                <a href="{{ route('brand.edit', $item->id) }}" class="btn btn-warning btn-sm">Sửa</a>
-                <form action="{{ route('brand.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                <a href="{{ route('admin.brand.edit', $item->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                <form action="{{ route('admin.brand.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>

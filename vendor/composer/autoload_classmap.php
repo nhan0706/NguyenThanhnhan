@@ -2187,7 +2187,7 @@ return array(
     'Illuminate\\Routing\\ResolvesRouteDependencies' => $vendorDir . '/laravel/framework/src/Illuminate/Routing/ResolvesRouteDependencies.php',
     'Illuminate\\Routing\\ResourceRegistrar' => $vendorDir . '/laravel/framework/src/Illuminate/Routing/ResourceRegistrar.php',
     'Illuminate\\Routing\\ResponseFactory' => $vendorDir . '/laravel/framework/src/Illuminate/Routing/ResponseFactory.php',
-    'Illuminate\\Routing\\Route' => $vendorDir . '/laravel/framework/src/Illuminate/Routing/Route.php',
+    'Illuminate\\Routing\\' => $vendorDir . '/laravel/framework/src/Illuminate/Routing/Route.php',
     'Illuminate\\Routing\\RouteAction' => $vendorDir . '/laravel/framework/src/Illuminate/Routing/RouteAction.php',
     'Illuminate\\Routing\\RouteBinding' => $vendorDir . '/laravel/framework/src/Illuminate/Routing/RouteBinding.php',
     'Illuminate\\Routing\\RouteCollection' => $vendorDir . '/laravel/framework/src/Illuminate/Routing/RouteCollection.php',

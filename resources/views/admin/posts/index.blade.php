@@ -8,6 +8,16 @@
 @section('content')
 <h2 class="mb-3">DANH SÁCH BÀI VIẾT</h2>
 
+@if(session('success'))
+    <div class="alert alert-success mb-3">
+        {{ session('success') }}
+    </div>
+@endif
+
+<a href="{{ route('admin.post.create') }}" class="btn btn-success mb-3">
+    + Thêm mới
+</a>
+
 <table class="table table-bordered table-hover table-striped">
     <thead class="table-dark">
         <tr>
@@ -16,6 +26,7 @@
             <th>Hình ảnh</th>
             <th>Tác giả</th>
             <th>Trạng thái</th>
+            <th>Chức năng</th>
         </tr>
     </thead>
     <tbody>
@@ -37,6 +48,9 @@
                 @else
                     <span class="badge bg-danger">Ẩn</span>
                 @endif
+            </td>
+            <td class="d-flex gap-1">
+                <a href="{{ route('admin.post.edit', $item->id) }}" class="btn btn-warning btn-sm">Sửa</a>
             </td>
         </tr>
         @endforeach

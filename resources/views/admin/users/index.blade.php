@@ -7,7 +7,14 @@
 {{-- Gán nội dung cho vùng section 'content' --}}
 @section('content')
 <h2 class="mb-3">DANH SÁCH NGƯỜI DÙNG</h2>
-<a href="{{ route('user.create') }}" class="btn btn-success mb-3">
+
+@if(session('success'))
+    <div class="alert alert-success mb-3">
+        {{ session('success') }}
+    </div>
+@endif
+
+<a href="{{ route('admin.user.create') }}" class="btn btn-success mb-3">
     + Thêm mới
 </a>
 <table class="table table-bordered table-hover table-striped">
@@ -51,6 +58,9 @@
                 @else
                     <span class="badge bg-danger">Khóa</span>
                 @endif
+            </td>
+            <td class="d-flex gap-1">
+                <a href="{{ route('admin.user.edit', $item->id) }}" class="btn btn-warning btn-sm">Sửa</a>
             </td>
         </tr>
         @endforeach

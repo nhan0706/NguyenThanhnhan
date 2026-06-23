@@ -6,27 +6,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-public function index($limit=10)
-{
-    // QUERY BUILDER
-    // $list = DB::table('users')
-    //     ->select('id', 'fullname', 'username', 'email', 'phone', 'address', 'role', 'status')
-    //     ->where('status', 1)
-    //     ->orderBy('fullname')
-    //     ->get();
+    public function index($limit=10)
+    {
+        $list = User::select('id', 'fullname', 'username', 'email', 'phone', 'address', 'role', 'status')
+            ->orderBy('fullname')
+            ->paginate($limit);
 
-    // ORM ELOQUENT
-    $list = User::select('id', 'fullname', 'username', 'email', 'phone', 'address', 'role', 'status')
-        ->orderBy('fullname')
-        ->paginate($limit);
-
-    return view('admin.users.index', compact('list'));
-}
+        return view('admin.users.index', compact('list'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -41,21 +35,28 @@ public function index($limit=10)
      */
     public function store(Request $request)
     {
-        $user = User::create([
-        'fullname' => $request->fullname,
-        'username' => $request->username,
-        'email'    => $request->email,
-        'password' => $request->password,
-        'phone'    => $request->phone,
-        'address'  => $request->address,
-        'gender'   => $request->gender,
-        'birthday' => $request->birthday,
-        'role'     => $request->role,
-        'status'   => $request->status,
-        ]);
+        try {
+            User::create([
+                'fullname' => $request->fullname,
+                'username' => $request->username,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+                'phone'    => $request->phone,
+                'address'  => $request->address,
+                'gender'   => $request->gender,
+                'birthday' => $request->birthday,
+                'role'     => $request->role,
+                'status'   => $request->status,
+            ]);
 
-        return redirect()->route('user.index');
-
+            return redirect()
+                ->route('admin.user.index')
+                ->with('success', 'Thêm người dùng thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -71,32 +72,56 @@ public function index($limit=10)
      */
     public function edit(string $id)
     {
-
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()
+                ->route('admin.user.index')
+                ->with('error', 'Người dùng không tồn tại');
+        }
+        return view('admin.users.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id) 
-    { 
-        $user = User::find($id);
-         if (!$user) { return redirect()->route('user.index'); } 
-         $data = [ 
-            'fullname' => $request->fullname, 
-            'username' => $request->username, 
-            'email' => $request->email, 
-            'phone' => $request->phone, 
-            'address' => $request->address, 
-            'gender' => $request->gender, 
-            'birthday' => $request->birthday, 
-            'role' => $request->role, 
-            'status' => $request->status, 
-        ]; // Chỉ cập nhật mật khẩu khi có nhập 
-        if ($request->filled('password')) { 
-            $data['password'] = Hash::make($request->password); 
-        } 
-        $user->update($data); 
-        return redirect()->route('user.index'); 
+    public function update(Request $request, string $id)
+    {
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                return redirect()
+                    ->route('admin.user.index')
+                    ->with('error', 'Người dùng không tồn tại');
+            }
+
+            $data = [
+                'fullname' => $request->fullname,
+                'username' => $request->username,
+                'email'    => $request->email,
+                'phone'    => $request->phone,
+                'address'  => $request->address,
+                'gender'   => $request->gender,
+                'birthday' => $request->birthday,
+                'role'     => $request->role,
+                'status'   => $request->status,
+            ];
+
+            // Chỉ cập nhật mật khẩu khi có nhập
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
+            }
+
+            $user->update($data);
+
+            return redirect()
+                ->route('admin.user.index')
+                ->with('success', 'Cập nhật người dùng thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**

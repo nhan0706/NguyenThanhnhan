@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Post;
+use App\Models\User;
 
 class PostController extends Controller
 {
@@ -27,7 +28,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::select('id', 'fullname')->get();
+        return view('admin.posts.create', compact('users'));
     }
 
     /**
@@ -35,7 +37,23 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            Post::create([
+                'title'       => $request->title,
+                'slug'        => $request->slug,
+                'content'     => $request->content,
+                'status'      => $request->status,
+                'user_id'     => $request->user_id,
+            ]);
+
+            return redirect()
+                ->route('admin.post.index')
+                ->with('success', 'Thêm bài viết thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -51,7 +69,14 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $post = Post::find($id);
+        if (!$post) {
+            return redirect()
+                ->route('admin.post.index')
+                ->with('error', 'Bài viết không tồn tại');
+        }
+        $users = User::select('id', 'fullname')->get();
+        return view('admin.posts.edit', compact('post', 'users'));
     }
 
     /**
@@ -59,7 +84,31 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $post = Post::find($id);
+
+            if (!$post) {
+                return redirect()
+                    ->route('admin.post.index')
+                    ->with('error', 'Bài viết không tồn tại');
+            }
+
+            $post->update([
+                'title'       => $request->title,
+                'slug'        => $request->slug,
+                'content'     => $request->content,
+                'status'      => $request->status,
+                'user_id'     => $request->user_id,
+            ]);
+
+            return redirect()
+                ->route('admin.post.index')
+                ->with('success', 'Cập nhật bài viết thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**

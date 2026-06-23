@@ -22,7 +22,7 @@ Route::get('/demo3', [DemoController::class, 'index3']);
 Route::get('/demo4/{id}', [DemoController::class, 'index4']);
 Route::get('/demo5/{id?}', [DemoController::class, 'index5']);
 Route::get('/demo6/{param1}/{param2}', [DemoController::class, 'index6']);
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('category', CategoryController::class);
     Route::resource('brand', BrandController::class);
     Route::resource('post', PostController::class);
@@ -31,7 +31,7 @@ Route::prefix('admin')->group(function () {
     
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
-    })->name('admin.home');
+    })->name('home');
 });
 
 Route::get('/test1', [ProductController::class, 'test1']);
