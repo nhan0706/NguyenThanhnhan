@@ -55,7 +55,7 @@ public function index($limit = 10)
             ]);
 
          return redirect()
-            ->route('admin.brands.index')
+            ->route('admin.brand.index')
             ->with('success', 'Thêm thành công.');
     } catch (\Exception $e) {
 
@@ -113,7 +113,7 @@ public function index($limit = 10)
             ]);
 
             return redirect()
-                ->route('admin.brands.index')
+                ->route('admin.brand.index')
                 ->with('success', 'Cập nhật thành công.');
         } catch (\Exception $e) {
             return redirect()

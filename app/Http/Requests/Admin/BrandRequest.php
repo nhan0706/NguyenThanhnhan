@@ -14,20 +14,20 @@ class BrandRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('id');
+        $id = $this->route('brand');
 
         return [
             'brandname' => [
                 'required',
                 'min:3',
                 'max:100',
-                Rule::unique('brands', 'brandname')->ignore($id, 'brandid'),
+                Rule::unique('brands', 'brandname')->ignore($id, 'id'),
             ],
             'slug' => [
                 'required',
                 'min:3',
                 'max:150',
-                Rule::unique('brands', 'slug')->ignore($id, 'brandid'),
+                Rule::unique('brands', 'slug')->ignore($id, 'id'),
                 'regex:/^[a-z0-9-]+$/',
             ],
             'sort_order' => 'required|integer|min:0',
