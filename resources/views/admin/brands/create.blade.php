@@ -8,11 +8,7 @@
 @section('content')
 <h2 class="mb-3">THÊM MỚI THƯƠNG HIỆU</h2>
 
-@if(session('error'))
-    <div class="alert alert-danger mb-3">
-        {{ session('error') }}
-    </div>
-@endif
+<x-admin.alert />
 
 <form action="{{ route('admin.brand.store') }}" method="POST">
     @csrf
@@ -21,24 +17,33 @@
         <label>Tên thương hiệu</label>
         <input type="text"
                name="brandname"
-               class="form-control"
+               class="form-control @error('brandname') is-invalid @enderror"
                value="{{ old('brandname') }}">
+        @error('brandname')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Slug</label>
         <input type="text"
                name="slug"
-               class="form-control"
+               class="form-control @error('slug') is-invalid @enderror"
                value="{{ old('slug') }}">
+        @error('slug')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Thứ tự sắp xếp</label>
         <input type="number"
                name="sort_order"
-               class="form-control"
+               class="form-control @error('sort_order') is-invalid @enderror"
                value="{{ old('sort_order', 0) }}">
+        @error('sort_order')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
@@ -50,10 +55,13 @@
 
     <div class="mb-3">
         <label>Trạng thái</label>
-        <select name="status" class="form-control">
+        <select name="status" class="form-control @error('status') is-invalid @enderror">
             <option value="1" {{ old('status', 1) == 1 ? 'selected' : '' }}>Hiển thị</option>
             <option value="0" {{ old('status', 1) == 0 ? 'selected' : '' }}>Ẩn</option>
         </select>
+        @error('status')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <button type="submit" class="btn btn-primary">

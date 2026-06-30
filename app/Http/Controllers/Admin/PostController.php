@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\PostRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\Post;
 use App\Models\User;
@@ -35,15 +35,17 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         try {
+            $validated = $request->validated();
+
             Post::create([
-                'title'       => $request->title,
-                'slug'        => $request->slug,
-                'content'     => $request->content,
-                'status'      => $request->status,
-                'user_id'     => $request->user_id,
+                'title'       => $validated['title'],
+                'slug'        => $validated['slug'],
+                'content'     => $validated['content'],
+                'status'      => $validated['status'],
+                'user_id'     => $validated['user_id'],
             ]);
 
             return redirect()
@@ -82,7 +84,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PostRequest $request, string $id)
     {
         try {
             $post = Post::find($id);
@@ -93,12 +95,14 @@ class PostController extends Controller
                     ->with('error', 'Bài viết không tồn tại');
             }
 
+            $validated = $request->validated();
+
             $post->update([
-                'title'       => $request->title,
-                'slug'        => $request->slug,
-                'content'     => $request->content,
-                'status'      => $request->status,
-                'user_id'     => $request->user_id,
+                'title'       => $validated['title'],
+                'slug'        => $validated['slug'],
+                'content'     => $validated['content'],
+                'status'      => $validated['status'],
+                'user_id'     => $validated['user_id'],
             ]);
 
             return redirect()

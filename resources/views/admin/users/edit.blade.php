@@ -8,11 +8,7 @@
 @section('content')
 <h2 class="mb-3">CẬP NHẬT NGƯỜI DÙNG</h2>
 
-@if(session('error'))
-    <div class="alert alert-danger mb-3">
-        {{ session('error') }}
-    </div>
-@endif
+<x-admin.alert />
 
 <form action="{{ route('admin.user.update', $user->id) }}" method="POST">
     @csrf
@@ -20,62 +16,92 @@
 
     <div class="mb-3">
         <label>Họ và tên</label>
-        <input type="text" name="fullname" class="form-control" value="{{ old('fullname', $user->fullname) }}">
+        <input type="text" name="fullname" class="form-control @error('fullname') is-invalid @enderror" value="{{ old('fullname', $user->fullname) }}">
+        @error('fullname')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Tên đăng nhập</label>
-        <input type="text" name="username" class="form-control" value="{{ old('username', $user->username) }}">
+        <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username', $user->username) }}">
+        @error('username')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Email</label>
-        <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}">
+        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}">
+        @error('email')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Mật khẩu <small class="text-muted">(để trống nếu không muốn thay đổi)</small></label>
-        <input type="password" name="password" class="form-control">
+        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror">
+        @error('password')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Số điện thoại</label>
-        <input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}">
+        <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $user->phone) }}">
+        @error('phone')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Địa chỉ</label>
-        <input type="text" name="address" class="form-control" value="{{ old('address', $user->address) }}">
+        <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" value="{{ old('address', $user->address) }}">
+        @error('address')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Giới tính</label>
-        <select name="gender" class="form-control">
+        <select name="gender" class="form-control @error('gender') is-invalid @enderror">
             <option value="1" {{ old('gender', $user->gender) == 1 ? 'selected' : '' }}>Nam</option>
             <option value="0" {{ old('gender', $user->gender) == 0 ? 'selected' : '' }}>Nữ</option>
         </select>
+        @error('gender')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Ngày sinh</label>
-        <input type="date" name="birthday" class="form-control" value="{{ old('birthday', $user->birthday) }}">
+        <input type="date" name="birthday" class="form-control @error('birthday') is-invalid @enderror" value="{{ old('birthday', $user->birthday) }}">
+        @error('birthday')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Quyền</label>
-        <select name="role" class="form-control">
+        <select name="role" class="form-control @error('role') is-invalid @enderror">
             <option value="1" {{ old('role', $user->role) == 1 ? 'selected' : '' }}>Admin</option>
             <option value="2" {{ old('role', $user->role) == 2 ? 'selected' : '' }}>Nhân viên</option>
             <option value="3" {{ old('role', $user->role) == 3 ? 'selected' : '' }}>Khách hàng</option>
         </select>
+        @error('role')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Trạng thái</label>
-        <select name="status" class="form-control">
+        <select name="status" class="form-control @error('status') is-invalid @enderror">
             <option value="1" {{ old('status', $user->status) == 1 ? 'selected' : '' }}>Hoạt động</option>
             <option value="0" {{ old('status', $user->status) == 0 ? 'selected' : '' }}>Khóa</option>
         </select>
+        @error('status')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <button type="submit" class="btn btn-primary">

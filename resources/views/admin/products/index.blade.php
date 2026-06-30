@@ -15,11 +15,7 @@
     <i class="bi bi-plus-circle"></i> Thêm mới
 </a>
 
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+<x-admin.alert />
 
 <table class="table table-bordered table-hover">
     <thead>

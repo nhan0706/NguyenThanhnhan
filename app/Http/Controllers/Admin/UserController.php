@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\UserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -33,20 +33,22 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         try {
+            $validated = $request->validated();
+
             User::create([
-                'fullname' => $request->fullname,
-                'username' => $request->username,
-                'email'    => $request->email,
-                'password' => Hash::make($request->password),
-                'phone'    => $request->phone,
-                'address'  => $request->address,
-                'gender'   => $request->gender,
-                'birthday' => $request->birthday,
-                'role'     => $request->role,
-                'status'   => $request->status,
+                'fullname' => $validated['fullname'],
+                'username' => $validated['username'],
+                'email'    => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'phone'    => $validated['phone'],
+                'address'  => $validated['address'],
+                'gender'   => $validated['gender'],
+                'birthday' => $validated['birthday'],
+                'role'     => $validated['role'],
+                'status'   => $validated['status'],
             ]);
 
             return redirect()
@@ -84,7 +86,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request, string $id)
     {
         try {
             $user = User::find($id);
@@ -95,21 +97,23 @@ class UserController extends Controller
                     ->with('error', 'Người dùng không tồn tại');
             }
 
+            $validated = $request->validated();
+
             $data = [
-                'fullname' => $request->fullname,
-                'username' => $request->username,
-                'email'    => $request->email,
-                'phone'    => $request->phone,
-                'address'  => $request->address,
-                'gender'   => $request->gender,
-                'birthday' => $request->birthday,
-                'role'     => $request->role,
-                'status'   => $request->status,
+                'fullname' => $validated['fullname'],
+                'username' => $validated['username'],
+                'email'    => $validated['email'],
+                'phone'    => $validated['phone'],
+                'address'  => $validated['address'],
+                'gender'   => $validated['gender'],
+                'birthday' => $validated['birthday'],
+                'role'     => $validated['role'],
+                'status'   => $validated['status'],
             ];
 
             // Chỉ cập nhật mật khẩu khi có nhập
             if ($request->filled('password')) {
-                $data['password'] = Hash::make($request->password);
+                $data['password'] = Hash::make($validated['password']);
             }
 
             $user->update($data);

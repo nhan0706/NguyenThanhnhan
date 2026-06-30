@@ -8,11 +8,7 @@
 @section('content')
 <h2 class="mb-3">CẬP NHẬT LOẠI SẢN PHẨM</h2>
 
-@if(session('error'))
-    <div class="alert alert-danger mb-3">
-        {{ session('error') }}
-    </div>
-@endif
+<x-admin.alert />
 
 <form action="{{ route('admin.category.update', $category->cateid) }}" method="POST">
     @csrf
@@ -22,36 +18,48 @@
         <label>Tên loại sản phẩm</label>
         <input type="text"
                name="catename"
-               class="form-control"
+               class="form-control @error('catename') is-invalid @enderror"
                value="{{ old('catename', $category->catename) }}">
+        @error('catename')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
     
     <div class="mb-3">
         <label>Slug</label>
         <input type="text"
                name="slug"
-               class="form-control"
+               class="form-control @error('slug') is-invalid @enderror"
                value="{{ old('slug', $category->slug) }}">
+        @error('slug')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Thứ tự sắp xếp</label>
         <input type="number"
                name="sort_order"
-               class="form-control"
+               class="form-control @error('sort_order') is-invalid @enderror"
                value="{{ old('sort_order', $category->sort_order) }}">
+        @error('sort_order')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Mô tả</label>
         <textarea name="description"
-                  class="form-control"
+                  class="form-control @error('description') is-invalid @enderror"
                   rows="4">{{ old('description', $category->description) }}</textarea>
+        @error('description')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
         <label>Trạng thái</label>
-        <select name="status" class="form-control">
+        <select name="status" class="form-control @error('status') is-invalid @enderror">
             <option value="1" {{ old('status', $category->status) == 1 ? 'selected' : '' }}>
                 Hiển thị
             </option>
@@ -59,6 +67,9 @@
                 Ẩn
             </option>
         </select>
+        @error('status')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
     
     

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\ProductRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Category;
@@ -68,7 +68,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-        public function store(Request $request)
+        public function store(ProductRequest $request)
     {
         try {
             Product::create([
@@ -85,11 +85,10 @@ class ProductController extends Controller
             return redirect()
                 ->route('admin.product.index')
                 ->with('success', 'Thêm sản phẩm thành công');
-                
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', 'Thêm thất bại.');
         }
     }
 
@@ -116,16 +115,9 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProductRequest $request, string $id)
     {
         try {
-            // Kiểm tra loại sản phẩm
-            if (empty($request->cateid)) {
-                return back()
-                    ->withInput()
-                    ->with('error', 'Vui lòng chọn loại sản phẩm');
-            }
-
             $product = Product::find($id);
 
             if (!$product) {
@@ -153,7 +145,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', 'Cập nhật thất bại. Vui lòng thử lại.');
         }
     }
 

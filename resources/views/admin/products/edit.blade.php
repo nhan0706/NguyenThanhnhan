@@ -12,11 +12,7 @@
 <div class="border rounded bg-white p-4 shadow-sm">
     <h3 class="mb-4">Sửa sản phẩm</h3>
 
-    @if(session('error'))
-        <div class="alert alert-danger mb-3">
-            {{ session('error') }}
-        </div>
-    @endif
+    <x-admin.alert />
     
     <form action="{{ route('admin.product.update', $product->id) }}" method="POST">
         @csrf
@@ -26,17 +22,23 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Tên sản phẩm</label>
-                    <input type="text" name="productname" class="form-control" value="{{ old('productname', $product->productname) }}" required>
+                    <input type="text" name="productname" class="form-control @error('productname') is-invalid @enderror" value="{{ old('productname', $product->productname) }}" required>
+                    @error('productname')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Slug</label>
-                    <input type="text" name="slug" class="form-control" value="{{ old('slug', $product->slug) }}" required>
+                    <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $product->slug) }}" required>
+                    @error('slug')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Loại sản phẩm</label>
-                    <select name="cateid" class="form-select">
+                    <select name="cateid" class="form-select @error('cateid') is-invalid @enderror">
                         <option value="">-- Chọn loại sản phẩm --</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->cateid }}" {{ old('cateid', $product->cateid) == $category->cateid ? 'selected' : '' }}>
@@ -44,11 +46,14 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('cateid')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Thương hiệu</label>
-                    <select name="brandid" class="form-select">
+                    <select name="brandid" class="form-select @error('brandid') is-invalid @enderror">
                         <option value="">-- Chọn thương hiệu --</option>
                         @foreach($brands as $brand)
                             <option value="{{ $brand->id }}" {{ old('brandid', $product->brandid) == $brand->id ? 'selected' : '' }}>
@@ -56,18 +61,27 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('brandid')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Giá</label>
-                    <input type="number" name="price" class="form-control" value="{{ old('price', $product->price) }}" required>
+                    <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $product->price) }}" required>
+                    @error('price')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Giá khuyến mãi</label>
-                    <input type="number" name="pricediscount" class="form-control" value="{{ old('pricediscount', $product->pricediscount) }}">
+                    <input type="number" name="pricediscount" class="form-control @error('pricediscount') is-invalid @enderror" value="{{ old('pricediscount', $product->pricediscount) }}">
+                    @error('pricediscount')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
                 
                 <div class="mb-3">
@@ -78,11 +92,17 @@
                     
                     <input type="radio" class="btn-check" name="status" id="inactive" value="0" {{ old('status', $product->status) == 0 ? 'checked' : '' }}>
                     <label class="btn btn-outline-danger" for="inactive">Ẩn</label>
+                    @error('status')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Mô tả sản phẩm</label>
-                    <textarea name="description" rows="4" class="form-control">{{ old('description', $product->description) }}</textarea>
+                    <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $product->description) }}</textarea>
+                    @error('description')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>

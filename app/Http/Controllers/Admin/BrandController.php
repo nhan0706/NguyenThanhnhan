@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\BrandRequest;
 use App\Models\Brand;
 use Illuminate\Support\Facades\DB;
+
 class BrandController extends Controller
 {
     /**
@@ -40,25 +41,29 @@ public function index($limit = 10)
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BrandRequest $request)
     {
         try {
+            $validated = $request->validated();
+
             Brand::create([
-                'brandname'  => $request->brandname,
-                'slug'       => $request->slug,
-                'status'     => $request->status,
-                'sort_order' => $request->sort_order,
+                'brandname'  => $validated['brandname'],
+                'slug'       => $validated['slug'],
+                'status'     => $validated['status'],
+                'sort_order' => $validated['sort_order'],
                 'description'=> $request->description,
             ]);
 
-            return redirect()
-                ->route('admin.brand.index')
-                ->with('success', 'Thêm thương hiệu thành công');
-        } catch (\Exception $e) {
-            return back()
-                ->withInput()
-                ->with('error', $e->getMessage());
-        }
+         return redirect()
+            ->route('admin.brands.index')
+            ->with('success', 'Thêm thành công.');
+    } catch (\Exception $e) {
+
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Thêm thất bại.');
+    }
     }
 
     /**
@@ -86,7 +91,7 @@ public function index($limit = 10)
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BrandRequest $request, string $id)
     {
         try {
             $brand = Brand::find($id);
@@ -97,21 +102,24 @@ public function index($limit = 10)
                     ->with('error', 'Thương hiệu không tồn tại');
             }
 
+            $validated = $request->validated();
+
             $brand->update([
-                'brandname'   => $request->brandname,
-                'slug'        => $request->slug,
-                'status'      => $request->status,
-                'sort_order'  => $request->sort_order,
+                'brandname'   => $validated['brandname'],
+                'slug'        => $validated['slug'],
+                'status'      => $validated['status'],
+                'sort_order'  => $validated['sort_order'],
                 'description' => $request->description,
             ]);
 
             return redirect()
-                ->route('admin.brand.index')
-                ->with('success', 'Cập nhật thương hiệu thành công');
+                ->route('admin.brands.index')
+                ->with('success', 'Cập nhật thành công.');
         } catch (\Exception $e) {
-            return back()
+            return redirect()
+                ->back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', 'Cập nhật thất bại.');
         }
     }
     /**

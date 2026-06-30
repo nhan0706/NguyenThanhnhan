@@ -8,11 +8,7 @@
 @section('content')
 <h2 class="mb-3">DANH SÁCH THƯƠNG HIỆU</h2>
 
-@if(session('success'))
-    <div class="alert alert-success mb-3">
-        {{ session('success') }}
-    </div>
-@endif
+<x-admin.alert />
 
 <a href="{{ route('admin.brand.create') }}" class="btn btn-success mb-3">
     + Thêm mới
