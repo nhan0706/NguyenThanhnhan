@@ -33,10 +33,10 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class, 'brandid', 'id');
     }
-}
 
     // Cấu hình Quan hệ với ảnh phụ
     public function images()
     {
         return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
+}
