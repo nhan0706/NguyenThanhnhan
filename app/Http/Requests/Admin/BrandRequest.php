@@ -32,6 +32,12 @@ class BrandRequest extends FormRequest
             ],
             'sort_order' => 'required|integer|min:0',
             'status' => 'required|in:0,1',
+            'img' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,jpeg,png,webp',
+                'max:200',
+            ],
         ];
     }
 
@@ -52,6 +58,9 @@ class BrandRequest extends FormRequest
             'sort_order.min' => 'Thứ tự sắp xếp không được âm.',
             'status.required' => 'Trạng thái không được để trống.',
             'status.in' => 'Trạng thái không hợp lệ.',
+            'img.image' => ':attribute phải là hình ảnh.',
+            'img.mimes' => ':attribute chỉ chấp nhận định dạng: jpg, jpeg, png, webp.',
+            'img.max' => ':attribute không được vượt quá 200 KB.',
         ];
     }
 
@@ -62,6 +71,7 @@ class BrandRequest extends FormRequest
             'slug' => 'Slug',
             'sort_order' => 'Thứ tự sắp xếp',
             'status' => 'Trạng thái',
+            'img' => 'Hình ảnh',
         ];
     }
 }

@@ -21,6 +21,7 @@
     <thead>
         <tr>
             <th>STT</th>
+            <th>Ảnh</th>
             <th>Tên sản phẩm</th>
             <th>Loại</th>
             <th>Thương hiệu</th>
@@ -33,6 +34,13 @@
         @forelse($list as $item)
             <tr>
                 <td>{{ $list->firstItem() + $loop->index }}</td>
+                <td>
+                    @if($item->image)
+                        <img src="{{ asset('storage/products/' . $item->image) }}" alt="{{ $item->productname }}" class="img-thumbnail" width="80">
+                    @else
+                        <span class="text-muted">—</span>
+                    @endif
+                </td>
                 <td>{{ $item->productname }}</td>
                 <td>{{ $item->category?->catename }}</td>
                 <td>{{ $item->brand?->brandname }}</td>

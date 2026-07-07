@@ -14,7 +14,7 @@
 
     <x-admin.alert />
     
-    <form action="{{ route('admin.product.store') }}" method="POST">
+    <form action="{{ route('admin.product.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <div class="row">
@@ -100,6 +100,27 @@
                     <label class="form-label">Mô tả sản phẩm</label>
                     <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                     @error('description')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3 img-group">
+                    <label class="form-label">Ảnh chính</label>
+                    <input type="file" name="img" class="form-control img-input @error('img') is-invalid @enderror">
+                    <div class="img-preview mt-2"></div>
+                    @error('img')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3 img-group">
+                    <label class="form-label">Ảnh phụ</label>
+                    <input type="file" name="imgs[]" class="form-control img-input @error('imgs') is-invalid @enderror" multiple>
+                    <div class="img-preview mt-2"></div>
+                    @error('imgs')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    @error('imgs.*')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>

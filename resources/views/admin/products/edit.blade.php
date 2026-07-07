@@ -14,7 +14,7 @@
 
     <x-admin.alert />
     
-    <form action="{{ route('admin.product.update', $product->id) }}" method="POST">
+    <form action="{{ route('admin.product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
@@ -101,6 +101,36 @@
                     <label class="form-label">Mô tả sản phẩm</label>
                     <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $product->description) }}</textarea>
                     @error('description')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3 img-group">
+                    <label class="form-label">Ảnh chính hiện tại</label>
+                    @if($product->image)
+                        <div class="mb-2">
+                            <img src="{{ asset('storage/products/' . $product->image) }}" alt="Ảnh chính" class="img-fluid" style="max-height: 150px;">
+                        </div>
+                    @endif
+                    <input type="file" name="img" class="form-control img-input @error('img') is-invalid @enderror">
+                    <div class="img-preview mt-2"></div>
+                    @error('img')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3 img-group">
+                    <label class="form-label">Ảnh phụ</label>
+                    <input type="file" name="imgs[]" class="form-control img-input @error('imgs') is-invalid @enderror" multiple>
+                    <div class="img-preview mt-2">
+                        @foreach($product->images as $image)
+                            <img src="{{ asset('storage/products/' . $image->image) }}" class="img-thumbnail me-2 mb-2" width="100">
+                        @endforeach
+                    </div>
+                    @error('imgs')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    @error('imgs.*')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>

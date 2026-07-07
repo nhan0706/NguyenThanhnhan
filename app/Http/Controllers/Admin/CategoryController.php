@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\Category;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -48,6 +50,7 @@ class CategoryController extends Controller
             'slug' => 'required|min:5|max:150|unique:categories,slug|regex:/^[a-z0-9\-]+$/',
             'sort_order' => 'required|integer|min:0',
             'status' => 'required|in:0,1',
+            'img' => 'nullable|image|mimes:jpeg,jpeg,png,webp|max:200',
         ],
         [
             'catename.required' => 'Tên loại sản phẩm không được để trống.',
@@ -64,18 +67,30 @@ class CategoryController extends Controller
             'sort_order.min' => 'Thứ tự sắp xếp không được âm.',
             'status.required' => 'Trạng thái không được để trống.',
             'status.in' => 'Trạng thái không hợp lệ.',
+            'img.image' => ':attribute phải là hình ảnh.',
+            'img.mimes' => ':attribute chỉ chấp nhận định dạng: jpg, jpeg, png, webp.',
+            'img.max' => ':attribute không được vượt quá 200 KB.',
         ],
         [
             'catename' => 'Tên loại sản phẩm',
             'slug' => 'Slug',
             'sort_order' => 'Thứ tự sắp xếp',
             'status' => 'Trạng thái',
+            'img' => 'Hình ảnh',
         ]);
 
         try {
+            $fileName = null;
+            if ($request->hasFile('img')) {
+                $file = $request->file('img');
+                $fileName = Str::slug($request->catename) . '-' . time() . '.' . $file->extension();
+                $file->storeAs('categories', $fileName, 'public');
+            }
+
             Category::create([ 
                 'catename'   => $validated['catename'],
                 'slug'       => $validated['slug'],
+                'image'      => $fileName,
                 'status'     => $validated['status'],
                 'sort_order' => $validated['sort_order'],
                 'description'=> $request->description,
@@ -140,6 +155,7 @@ class CategoryController extends Controller
                 ],
                 'sort_order' => 'required|integer|min:0',
                 'status' => 'required|in:0,1',
+                'img' => 'nullable|image|mimes:jpeg,jpeg,png,webp|max:200',
             ],
             [
                 'catename.required' => 'Tên loại sản phẩm không được để trống.',
@@ -156,17 +172,34 @@ class CategoryController extends Controller
                 'sort_order.min' => 'Thứ tự sắp xếp không được âm.',
                 'status.required' => 'Trạng thái không được để trống.',
                 'status.in' => 'Trạng thái không hợp lệ.',
+                'img.image' => ':attribute phải là hình ảnh.',
+                'img.mimes' => ':attribute chỉ chấp nhận định dạng: jpg, jpeg, png, webp.',
+                'img.max' => ':attribute không được vượt quá 200 KB.',
             ],
             [
                 'catename' => 'Tên loại sản phẩm',
                 'slug' => 'Slug',
                 'sort_order' => 'Thứ tự sắp xếp',
                 'status' => 'Trạng thái',
+                'img' => 'Hình ảnh',
             ]);
+
+            // handle image: keep existing filename unless new uploaded
+            $fileName = $category->image;
+            if ($request->hasFile('img')) {
+                // delete old file
+                if ($fileName) {
+                    Storage::disk('public')->delete('categories/' . $fileName);
+                }
+                $file = $request->file('img');
+                $fileName = Str::slug($request->catename) . '-' . time() . '.' . $file->extension();
+                $file->storeAs('categories', $fileName, 'public');
+            }
 
             $category->update([
                 'catename'   => $validated['catename'],
                 'slug'       => $validated['slug'],
+                'image'      => $fileName,
                 'status'     => $validated['status'],
                 'sort_order' => $validated['sort_order'],
                 'description'=> $request->description,

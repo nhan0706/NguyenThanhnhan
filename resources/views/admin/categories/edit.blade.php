@@ -10,7 +10,7 @@
 
 <x-admin.alert />
 
-<form action="{{ route('admin.category.update', $category->cateid) }}" method="POST">
+<form action="{{ route('admin.category.update', $category->cateid) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     
@@ -72,6 +72,18 @@
         @enderror
     </div>
     
+    <div class="mb-3 img-group">
+        <label>Hình ảnh</label>
+        <input type="file" name="img" class="form-control img-input @error('img') is-invalid @enderror">
+        <div class="img-preview mt-2">
+            @if($category->image)
+                <img src="{{ asset('storage/categories/' . $category->image) }}" alt="{{ $category->catename }}" width="150" class="img-thumbnail">
+            @endif
+        </div>
+        @error('img')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
     
     <button type="submit" class="btn btn-primary">
         Cập nhật

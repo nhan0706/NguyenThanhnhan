@@ -10,7 +10,7 @@
 
 <x-admin.alert />
 
-<form action="{{ route('admin.brand.store') }}" method="POST">
+<form action="{{ route('admin.brand.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
     <div class="mb-3">
@@ -51,6 +51,17 @@
         <textarea name="description"
                   class="form-control"
                   rows="4">{{ old('description') }}</textarea>
+    </div>
+
+    <div class="mb-3 img-group">
+        <label>Hình ảnh</label>
+        <input type="file"
+               name="img"
+               class="form-control img-input @error('img') is-invalid @enderror">
+        <div class="img-preview mt-2"></div>
+        @error('img')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">

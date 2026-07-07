@@ -10,7 +10,7 @@
 
 <x-admin.alert />
 
-<form action="{{ route('admin.brand.update', $brand->id) }}" method="POST">
+<form action="{{ route('admin.brand.update', $brand->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -68,6 +68,21 @@
             </option>
         </select>
         @error('status')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="mb-3 img-group">
+        <label>Hình ảnh</label>
+        <input type="file"
+               name="img"
+               class="form-control img-input @error('img') is-invalid @enderror">
+        <div class="img-preview mt-2">
+            @if($brand->image)
+                <img src="{{ asset('storage/brands/' . $brand->image) }}" alt="{{ $brand->brandname }}" width="150" class="img-thumbnail">
+            @endif
+        </div>
+        @error('img')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>

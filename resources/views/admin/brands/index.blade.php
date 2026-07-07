@@ -34,9 +34,9 @@
             <td>{{ $item->slug }}</td>
             <td>
                 @if($item->image)
-                    <img src="{{ asset('images/' . $item->image) }}" alt="Image" width="50">
+                    <img src="{{ asset('storage/brands/' . $item->image) }}" alt="{{ $item->brandname }}" class="img-thumbnail" width="80">
                 @else
-                    <img src="{{ asset('images/default.png') }}" alt="Default" width="50">
+                    <img src="{{ asset('images/default.png') }}" alt="Default" class="img-thumbnail" width="80">
                 @endif
             </td>
             <td>

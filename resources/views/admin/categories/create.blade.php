@@ -10,7 +10,7 @@
 
 <x-admin.alert />
 
-<form action="{{ route('admin.category.store') }}" method="POST">
+<form action="{{ route('admin.category.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
     <div class="mb-3">
@@ -49,6 +49,15 @@
             <option value="0" {{ old('status', 1) == 0 ? 'selected' : '' }}>Ẩn</option>
         </select>
         @error('status')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="mb-3 img-group">
+        <label>Hình ảnh</label>
+        <input type="file" name="img" class="form-control img-input @error('img') is-invalid @enderror">
+        <div class="img-preview mt-2"></div>
+        @error('img')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>

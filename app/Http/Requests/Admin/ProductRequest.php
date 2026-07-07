@@ -15,6 +15,10 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->route('product');
+        $isUpdate = !empty($id);
+        $imgRule = $isUpdate
+            ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:200']
+            : ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:200'];
 
         return [
             'productname' => [
@@ -48,6 +52,16 @@ class ProductRequest extends FormRequest
             'cateid' => 'required|exists:categories,cateid',
             'brandid' => 'nullable|exists:brands,id',
             'description' => ['nullable', 'regex:/^[^@!$\^]*$/'],
+            'img' => $imgRule,
+            'imgs' => [
+                'nullable',
+                'array',
+            ],
+            'imgs.*' => [
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:200',
+            ],
         ];
     }
 
@@ -65,6 +79,13 @@ class ProductRequest extends FormRequest
             'lte' => ':attribute không được lớn hơn giá gốc.',
             'in' => ':attribute không hợp lệ.',
             'exists' => ':attribute không tồn tại.',
+            'img.image' => ':attribute phải là hình ảnh.',
+            'img.mimes' => ':attribute chỉ chấp nhận định dạng: jpg, jpeg, png, webp.',
+            'img.max' => ':attribute không được vượt quá 200 KB.',
+            'imgs.array' => ':attribute không hợp lệ.',
+            'imgs.*.image' => 'Mỗi ảnh phải là tệp hình ảnh hợp lệ.',
+            'imgs.*.mimes' => 'Mỗi ảnh chỉ chấp nhận định dạng: jpg, jpeg, png, webp.',
+            'imgs.*.max' => 'Mỗi ảnh không được vượt quá 200 KB.',
         ];
     }
 
@@ -79,6 +100,8 @@ class ProductRequest extends FormRequest
             'cateid' => 'Loại sản phẩm',
             'brandid' => 'Thương hiệu',
             'description' => 'Mô tả',
+            'img' => 'Ảnh chính',
+            'imgs' => 'Ảnh phụ',
         ];
     }
 }

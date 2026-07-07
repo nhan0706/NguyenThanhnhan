@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BrandRequest;
 use App\Models\Brand;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 class BrandController extends Controller
 {
     /**
@@ -45,10 +46,17 @@ public function index($limit = 10)
     {
         try {
             $validated = $request->validated();
+            $fileName = null;
+            if ($request->hasFile('img')) {
+                $file = $request->file('img');
+                $fileName = Str::slug($request->brandname) . '-' . time() . '.' . $file->extension();
+                $file->storeAs('brands', $fileName, 'public');
+            }
 
             Brand::create([
                 'brandname'  => $validated['brandname'],
                 'slug'       => $validated['slug'],
+                'image'      => $fileName,
                 'status'     => $validated['status'],
                 'sort_order' => $validated['sort_order'],
                 'description'=> $request->description,
@@ -92,36 +100,57 @@ public function index($limit = 10)
      * Update the specified resource in storage.
      */
     public function update(BrandRequest $request, string $id)
-    {
-        try {
-            $brand = Brand::find($id);
+{
+    try {
+        // 1. Tìm brand theo id và kiểm tra tồn tại
+        $brand = Brand::find($id);
 
-            if (!$brand) {
-                return redirect()
-                    ->route('admin.brand.index')
-                    ->with('error', 'Thương hiệu không tồn tại');
-            }
-
-            $validated = $request->validated();
-
-            $brand->update([
-                'brandname'   => $validated['brandname'],
-                'slug'        => $validated['slug'],
-                'status'      => $validated['status'],
-                'sort_order'  => $validated['sort_order'],
-                'description' => $request->description,
-            ]);
-
+        if (!$brand) {
             return redirect()
                 ->route('admin.brand.index')
-                ->with('success', 'Cập nhật thành công.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Cập nhật thất bại.');
+                ->with('error', 'Thương hiệu không tồn tại');
         }
+
+        // 2. Lấy dữ liệu đã được validate từ BrandRequest
+        $validated = $request->validated();
+
+        // 3. Xử lý hình ảnh (Giữ tên cũ hoặc upload mới)
+        $fileName = $brand->image;
+        if ($request->hasFile('img')) {
+            // Xóa hình ảnh cũ nếu có
+            if ($fileName) {
+                Storage::disk('public')->delete('brands/' . $fileName);
+            }
+            
+            // Upload hình ảnh mới
+            $file = $request->file('img');
+            // Sử dụng $validated['brandname'] để đảm bảo an toàn dữ liệu
+            $fileName = Str::slug($validated['brandname']) . '-' . time() . '.' . $file->extension();
+            $file->storeAs('brands', $fileName, 'public');
+        }
+
+        // 4. Cập nhật dữ liệu vào Database
+        $brand->update([
+            'brandname'   => $validated['brandname'],
+            'slug'        => $validated['slug'],
+            'status'      => $validated['status'],
+            'sort_order'  => $validated['sort_order'] ?? 0, // Đề phòng trường hợp sort_order không bắt buộc
+            'description' => $validated['description'] ?? $request->description,
+            'image'       => $fileName,
+        ]);
+
+        return redirect()
+            ->route('admin.brand.index')
+            ->with('success', 'Cập nhật thành công.');
+
+    } catch (\Exception $e) {
+        // Ghi log lỗi nếu cần thiết để dễ debug: Log::error($e->getMessage());
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Cập nhật thất bại.');
     }
+}
     /**
      * Remove the specified resource from storage.
      */
