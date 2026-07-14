@@ -7,7 +7,7 @@
     <ul class="nav flex-column">
         {{-- Menu Dashboard --}}
         <li class="nav-item">
-            <a class="nav-link text-white" href="{{ route('admin.home') }}">
+            <a class="nav-link text-white" href="{{ route('admin.dashboard') }}">
                 <i class="bi bi-house-door"></i> Dashboard
             </a>
         </li>
@@ -93,6 +93,11 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ route('admin.user.create') }}">
                             Thêm người dùng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('admin.password.change') }}">
+                            Đổi mật khẩu
                         </a>
                     </li>
                 </ul>
