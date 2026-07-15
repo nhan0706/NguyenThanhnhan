@@ -14,6 +14,9 @@
 <a href="{{ route('admin.product.create') }}" class="btn btn-primary mb-2">
     <i class="bi bi-plus-circle"></i> Thêm mới
 </a>
+<a href="{{ route('admin.product.trash') }}" class="btn btn-warning mb-2 ms-2">
+    <i class="bi bi-trash"></i> Thùng rác
+</a>
 
 <x-admin.alert />
 

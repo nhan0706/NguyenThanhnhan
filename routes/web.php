@@ -47,11 +47,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('category', CategoryController::class);
             Route::resource('brand', BrandController::class);
             Route::resource('user', UserController::class);
+
+            Route::get('product/trash', [ProductController::class, 'trash'])->name('product.trash');
+            Route::post('product/restore-all', [ProductController::class, 'restoreAll'])->name('product.restoreAll');
+            Route::delete('product/force-delete-all', [ProductController::class, 'forceDeleteAll'])->name('product.forceDeleteAll');
+            Route::post('product/{id}/restore', [ProductController::class, 'restore'])->name('product.restore');
+            Route::delete('product/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('product.forceDelete');
             Route::resource('product', ProductController::class);
             Route::resource('post', PostController::class);
         });
 
-        Route::resource('product', ProductController::class)->only(['index'])->middleware('roles:2');
+        Route::resource('product', ProductController::class)->only(['index'])->middleware('roles:1,2');
     });
 });
 

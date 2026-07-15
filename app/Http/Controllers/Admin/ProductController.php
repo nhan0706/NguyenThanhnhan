@@ -203,30 +203,128 @@ class ProductController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (Soft Delete).
      */
     public function destroy(string $id)
     {
-        $product = Product::find($id);
-        if (!$product) {
+        try {
+            Product::findOrFail($id)->delete();
             return redirect()
                 ->route('admin.product.index')
-                ->with('error', 'Sản phẩm không tồn tại');
+                ->with('success', 'Xóa sản phẩm thành công (đã đưa vào thùng rác).');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Thực hiện thất bại.');
         }
+    }
 
-        if ($product->image) {
-            Storage::disk('public')->delete('products/' . $product->image);
+    /**
+     * Display list of trashed products.
+     */
+    public function trash()
+    {
+        $trashCount = Product::onlyTrashed()->count();
+        $list = Product::onlyTrashed()
+            ->with([
+                'category:cateid,catename',
+                'brand:id,brandname'
+            ])
+            ->orderBy('productname')
+            ->paginate(10);
+
+        return view('admin.products.trash', compact('list', 'trashCount'));
+    }
+
+    /**
+     * Restore a soft-deleted product.
+     */
+    public function restore($id)
+    {
+        try {
+            Product::onlyTrashed()->findOrFail($id)->restore();
+            return redirect()
+                ->route('admin.product.trash')
+                ->with('success', 'Khôi phục thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Khôi phục thất bại.');
         }
+    }
 
-        foreach ($product->images as $image) {
-            Storage::disk('public')->delete('products/' . $image->image);
+    /**
+     * Restore all soft-deleted products.
+     */
+    public function restoreAll()
+    {
+        try {
+            Product::onlyTrashed()->restore();
+            return redirect()
+                ->route('admin.product.trash')
+                ->with('success', 'Khôi phục tất cả thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Khôi phục tất cả thất bại.');
         }
+    }
 
-        $product->delete();
+    /**
+     * Permanently delete the specified product.
+     */
+    public function forceDelete($id)
+    {
+        try {
+            $product = Product::onlyTrashed()->findOrFail($id);
+            
+            // Delete main image from storage
+            if ($product->image) {
+                Storage::disk('public')->delete('products/' . $product->image);
+            }
+            
+            // Delete sub images from storage and DB
+            foreach ($product->images as $image) {
+                Storage::disk('public')->delete('products/' . $image->image);
+                $image->delete();
+            }
 
-        return redirect()
-            ->route('admin.product.index')
-            ->with('success', 'Xóa sản phẩm thành công');
+            $product->forceDelete();
+            return redirect()
+                ->route('admin.product.trash')
+                ->with('success', 'Xóa vĩnh viễn thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xóa thất bại.');
+        }
+    }
+
+    /**
+     * Permanently delete all soft-deleted products.
+     */
+    public function forceDeleteAll()
+    {
+        try {
+            $products = Product::onlyTrashed()->get();
+            foreach ($products as $product) {
+                if ($product->image) {
+                    Storage::disk('public')->delete('products/' . $product->image);
+                }
+                foreach ($product->images as $image) {
+                    Storage::disk('public')->delete('products/' . $image->image);
+                    $image->delete();
+                }
+                $product->forceDelete();
+            }
+            return redirect()
+                ->route('admin.product.trash')
+                ->with('success', 'Xóa vĩnh viễn tất cả thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xóa vĩnh viễn tất cả thất bại.');
+        }
     }
 
     public function test1()
