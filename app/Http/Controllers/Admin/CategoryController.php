@@ -215,13 +215,101 @@ class CategoryController extends Controller
                 ->with('error', $e->getMessage());
         }
     }
-
+    
     /**
-     * Remove the specified resource from storage.
+     * Soft delete the specified resource.
      */
     public function destroy(string $id)
     {
-        DB::table('categories')->where('cateid', $id)->delete();
-        return redirect()->route('admin.category.index');
+        try {
+            Category::findOrFail($id)->delete();
+            return redirect()
+                ->route('admin.category.index')
+                ->with('success', 'Xóa thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Thực hiện thất bại.');
+        }
     }
+
+    /**
+     * Restore a soft-deleted resource.
+     */
+    public function restore($id)
+    {
+        try {
+            Category::onlyTrashed()->findOrFail($id)->restore();
+            return redirect()
+                ->route('admin.category.trash')
+                ->with('success', 'Khôi phục thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Khôi phục thất bại.');
+        }
+    }
+
+    /**
+     * Restore all soft-deleted resources.
+     */
+    public function restoreAll()
+    {
+        try {
+            Category::onlyTrashed()->restore();
+            return redirect()
+                ->route('admin.category.trash')
+                ->with('success', 'Khôi phục tất cả thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Khôi phục tất cả thất bại.');
+        }
+    }
+
+    /**
+     * Permanently delete the specified resource.
+     */
+    public function forceDelete($id)
+    {
+        try {
+            Category::onlyTrashed()->findOrFail($id)->forceDelete();
+            return redirect()
+                ->route('admin.category.trash')
+                ->with('success', 'Xóa vĩnh viễn thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xóa thất bại.');
+        }
+    }
+
+    /**
+     * Permanently delete all soft-deleted resources.
+     */
+    public function forceDeleteAll()
+    {
+        try {
+            Category::onlyTrashed()->forceDelete();
+            return redirect()
+                ->route('admin.category.trash')
+                ->with('success', 'Xóa vĩnh viễn tất cả thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xóa vĩnh viễn tất cả thất bại.');
+        }
+    }
+
+    /**
+     * Display list of trashed categories.
+     */
+    public function trash()
+    {
+        $trashCount = Category::onlyTrashed()->count();
+        $list = Category::onlyTrashed()->orderBy('catename')->paginate(10);
+
+        return view('admin.categories.trash', compact('list', 'trashCount'));
+    }
+    
 }

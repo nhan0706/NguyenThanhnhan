@@ -37,11 +37,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/change-password', [AuthController::class, 'changePassword'])->name('password.change');
         Route::post('/change-password', [AuthController::class, 'updatePassword'])->name('password.update');
 
-        Route::resource('category', CategoryController::class);
-        Route::resource('brand', BrandController::class);
-        Route::resource('post', PostController::class);
-        Route::resource('product', ProductController::class);
-        Route::resource('user', UserController::class);
+        // CRUD - Resource route
+        Route::middleware('roles:1')->group(function () {
+            Route::get('category/trash', [CategoryController::class, 'trash'])->name('category.trash');
+            Route::post('category/restore-all', [CategoryController::class, 'restoreAll'])->name('category.restoreAll');
+            Route::delete('category/force-delete-all', [CategoryController::class, 'forceDeleteAll'])->name('category.forceDeleteAll');
+            Route::post('category/{id}/restore', [CategoryController::class, 'restore'])->name('category.restore');
+            Route::delete('category/{id}/force-delete', [CategoryController::class, 'forceDelete'])->name('category.forceDelete');
+            Route::resource('category', CategoryController::class);
+            Route::resource('brand', BrandController::class);
+            Route::resource('user', UserController::class);
+            Route::resource('product', ProductController::class);
+            Route::resource('post', PostController::class);
+        });
+
+        Route::resource('product', ProductController::class)->only(['index'])->middleware('roles:2');
     });
 });
 

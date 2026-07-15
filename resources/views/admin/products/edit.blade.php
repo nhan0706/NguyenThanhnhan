@@ -24,7 +24,7 @@
                     <label class="form-label">Tên sản phẩm</label>
                     <input type="text" name="productname" class="form-control @error('productname') is-invalid @enderror" value="{{ old('productname', $product->productname) }}" required>
                     @error('productname')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                   s     <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
                 

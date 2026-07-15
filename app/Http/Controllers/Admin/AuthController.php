@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -122,6 +124,33 @@ class AuthController extends Controller
     // Xử lý Quên mật khẩu
     public function postForgotpassword(Request $request)
     {
-        // TODO: Thêm xử lý quên mật khẩu
+        $request->validate([
+            'email' => 'required|email',
+        ], [
+            'email.required' => 'Email không được để trống',
+            'email.email' => 'Email không đúng định dạng',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user) {
+            return back()->with('error', 'Email không tồn tại trong hệ thống')->withInput();
+        }
+
+        $passrandom = Str::random(10);
+        $passencrypted = Hash::make($passrandom);
+
+        $user->update([
+            'password' => $passencrypted,
+        ]);
+
+        $html = "<h2>Mật khẩu mới của bạn là: $passrandom</h2>\n<p>Vui lòng đổi mật khẩu sau khi đăng nhập.</p>";
+
+        Mail::html($html, function ($message) use ($request) {
+            $message->to($request->email)
+                ->subject('Đặt lại mật khẩu');
+        });
+
+        return back()->with('success', 'Đã gửi mật khẩu mới. Bạn vui lòng kiểm tra email của bạn');
     }
 }

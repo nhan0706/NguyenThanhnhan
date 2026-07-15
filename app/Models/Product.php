@@ -15,6 +15,7 @@ class Product extends Model
         'cateid',
         'brandid',
         'slug',
+        
         'price',
         'pricediscount',
         'image',
