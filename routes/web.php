@@ -9,10 +9,14 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/product/{slug}', [ClientProductController::class, 'show'])->name('product.show');
+Route::get('/category/{slug}', [ClientProductController::class, 'category'])->name('products.category');
+Route::get('/brand/{slug}', [ClientProductController::class, 'brand'])->name('products.brand');
+Route::get('/search', [ClientProductController::class, 'search'])->name('products.search');
 
 Route::get('/test', function () {
     return "Test";

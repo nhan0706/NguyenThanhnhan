@@ -13,6 +13,10 @@
 <a href="{{ route('admin.category.create') }}" class="btn btn-success mb-3">
     + Thêm mới
 </a>
+<a href="{{ route('admin.category.trash') }}" class="btn btn-warning mb-2 ms-2">
+    <i class="bi bi-trash"></i> Thùng rác
+</a>
+
 
 <table class="table table-bordered table-hover table-striped">
     <thead class="table-dark">
