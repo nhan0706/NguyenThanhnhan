@@ -21,10 +21,10 @@ class HomeController extends Controller
                 'status'
             )
             ->orderByDesc('created_at')
-            ->take(8)
+            ->take(20)
             ->get();
 
-        // Sản phẩm giảm giá (lấy 8 sản phẩm mới nhất)
+        // Sản phẩm giảm giá (lấy 20 sản phẩm mới nhất)
         $saleProducts = Product::where('status', 1)
             ->select(
                 'id',
@@ -37,7 +37,7 @@ class HomeController extends Controller
             )
             ->where('pricediscount', '>', 0)
             ->orderByDesc('created_at')
-            ->take(8)
+            ->take(20)
             ->get();
 
         return view('client.home', compact(

@@ -26,8 +26,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
-        // Chỉ tải dữ liệu cho Navbar
-        View::composer('client._partials.navbar', function ($view) {
+        // Tải dữ liệu cho các view Client
+        View::composer('client.*', function ($view) {
             $categories = Cache::remember(
                 'navbar_categories',
                 now()->addHours(1),

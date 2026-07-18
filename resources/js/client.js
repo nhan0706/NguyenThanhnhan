@@ -5,3 +5,4 @@ import './bootstrap';
 import 'bootstrap';
 
 // Import file JavaScript từ việt (nếu có)
+import './cart';

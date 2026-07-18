@@ -2,7 +2,8 @@
     {{-- Hình ảnh --}}
     <img src="{{ asset('storage/products/'.$product->image) }}"
         class="card-img-top" alt="{{ $product->productname }}"
-        style="height:150px;object-fit:cover;">
+        style="height:150px;object-fit:cover;"
+        onerror="this.onerror=null;this.src='{{ asset('images/default.png') }}';">
     <div class="card-body d-flex flex-column">
         {{-- Tên sản phẩm --}}
         <h6 class="card-title">
@@ -32,9 +33,12 @@
                     </a>
                 </div>
                 <div class="col-6">
-                    <button class="btn btn-success w-100">
-                        <i class="bi bi-cart-plus"></i>
-                    </button>
+                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="form-add-cart">
+                        @csrf
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-cart-plus"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

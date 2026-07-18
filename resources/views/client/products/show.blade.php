@@ -5,13 +5,15 @@
     <div class="col-md-5">
         <div class="border rounded p-2 mb-3">
             <img src="{{ asset('storage/products/' . ($product->image ?? 'default.png')) }}"
-                class="img-fluid rounded w-100" style="height:400px;object-fit:cover;">
+                class="img-fluid rounded w-100" style="height:400px;object-fit:cover;"
+                onerror="this.onerror=null;this.src='{{ asset('images/default.png') }}';">
         </div>
         <div class="row g-2">
             @foreach ($product->images as $image)
                 <div class="col-3">
                     <img src="{{ asset('storage/products/' . $image->image) }}"
-                        class="img-fluid rounded border shadow-sm">
+                        class="img-fluid rounded border shadow-sm"
+                        onerror="this.onerror=null;this.src='{{ asset('images/default.png') }}';">
                 </div>
             @endforeach
         </div>
@@ -46,7 +48,8 @@
         <div class="col-md-3 mb-4">
             <div class="card h-100 shadow-sm">
                 <img src="{{ asset('storage/products/' . ($item->image ?? 'default.png')) }}"
-                    class="card-img-top" style="height:150px;object-fit:cover;">
+                    class="card-img-top" style="height:150px;object-fit:cover;"
+                    onerror="this.onerror=null;this.src='{{ asset('images/default.png') }}';">
                 <div class="card-body">
                     <h6>{{ $item->productname }}</h6>
                     <p class="text-danger fw-bold">

@@ -78,8 +78,12 @@
                 </button>
             </form>
             {{-- Giỏ hàng --}}
-            <a href="#" class="btn btn-outline-success">
-                Giỏ hàng (0)
+            <a href="{{ route('cart.show') }}" class="btn btn-outline-success">
+                Giỏ hàng (
+                <span class="badge bg-warning text-dark" id="cart-count">
+                    {{ count(session('cart', [])) }}
+                </span>
+                )
             </a>
         </div>
     </div>

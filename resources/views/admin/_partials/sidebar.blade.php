@@ -161,5 +161,21 @@
                 </ul>
             </div>
         </li>
+        
+        {{-- Menu Khách hàng --}}
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ route('admin.customer.index') }}">
+                <i class="bi bi-people-fill"></i>
+                Quản lý khách hàng
+            </a>
+        </li>
+
+        {{-- Menu Đơn hàng --}}
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ route('admin.order.index') }}">
+                <i class="bi bi-receipt"></i>
+                Quản lý đơn hàng
+            </a>
+        </li>
     </ul>
 </div>

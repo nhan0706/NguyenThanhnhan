@@ -8,15 +8,25 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
+use App\Http\Controllers\Client\CartController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/product/{slug}', [ClientProductController::class, 'show'])->name('product.show');
 Route::get('/category/{slug}', [ClientProductController::class, 'category'])->name('products.category');
 Route::get('/brand/{slug}', [ClientProductController::class, 'brand'])->name('products.brand');
 Route::get('/search', [ClientProductController::class, 'search'])->name('products.search');
+
+Route::prefix('cart')->controller(CartController::class)->name('cart.')->group(function () {
+    Route::get('/show', 'show')->name('show');
+    Route::post('/add/{id}', 'addToCart')->name('add');
+    Route::delete('/remove/{id}', 'removeCart')->name('remove');
+    Route::post('/checkout', 'checkout')->name('checkout');
+});
 
 Route::get('/test', function () {
     return "Test";
@@ -51,6 +61,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('category', CategoryController::class);
             Route::resource('brand', BrandController::class);
             Route::resource('user', UserController::class);
+            Route::resource('customer', CustomerController::class);
 
             Route::get('product/trash', [ProductController::class, 'trash'])->name('product.trash');
             Route::post('product/restore-all', [ProductController::class, 'restoreAll'])->name('product.restoreAll');
@@ -59,6 +70,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('product/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('product.forceDelete');
             Route::resource('product', ProductController::class);
             Route::resource('post', PostController::class);
+            Route::resource('order', OrderController::class)->only(['index','show','update']);
         });
 
         Route::resource('product', ProductController::class)->only(['index'])->middleware('roles:1,2');
