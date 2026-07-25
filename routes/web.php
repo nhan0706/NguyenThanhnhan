@@ -1,0 +1,93 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DemoController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\AuthController as ClientAuthController;
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Client Authentication
+Route::get('/login', [ClientAuthController::class, 'login'])->name('client.login');
+Route::post('/login', [ClientAuthController::class, 'postLogin'])->name('client.login.post');
+Route::get('/register', [ClientAuthController::class, 'register'])->name('client.register');
+Route::post('/register', [ClientAuthController::class, 'postRegister'])->name('client.register.post');
+Route::post('/logout', [ClientAuthController::class, 'logout'])->name('client.logout');
+
+Route::get('/product/{slug}', [ClientProductController::class, 'show'])->name('product.show');
+Route::get('/category/{slug}', [ClientProductController::class, 'category'])->name('products.category');
+Route::get('/brand/{slug}', [ClientProductController::class, 'brand'])->name('products.brand');
+Route::get('/search', [ClientProductController::class, 'search'])->name('products.search');
+
+Route::prefix('cart')->controller(CartController::class)->name('cart.')->group(function () {
+    Route::get('/show', 'show')->name('show');
+    Route::post('/add/{id}', 'addToCart')->name('add');
+    Route::post('/update/{id}', 'updateCart')->name('update');
+    Route::delete('/remove/{id}', 'removeCart')->name('remove');
+    Route::post('/checkout', 'checkout')->name('checkout');
+});
+
+Route::get('/test', function () {
+    return "Test";
+});
+
+Route::get('/demo1', [DemoController::class, 'index']);
+Route::get('/demo2', [DemoController::class, 'index2']);
+Route::get('/demo3', [DemoController::class, 'index3']);
+Route::get('/demo4/{id}', [DemoController::class, 'index4']);
+Route::get('/demo5/{id?}', [DemoController::class, 'index5']);
+Route::get('/demo6/{param1}/{param2}', [DemoController::class, 'index6']);
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Authentication
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'postLogin'])->name('login.post');
+    Route::get('/forgotpass', [AuthController::class, 'forgotPassword'])->name('forgotpass');
+    Route::post('/forgotpass', [AuthController::class, 'postForgotpassword'])->name('forgotpass.post');
+
+    Route::middleware('auth')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/change-password', [AuthController::class, 'changePassword'])->name('password.change');
+        Route::post('/change-password', [AuthController::class, 'updatePassword'])->name('password.update');
+
+        // CRUD - Resource route
+        Route::middleware('roles:1')->group(function () {
+            Route::get('category/trash', [CategoryController::class, 'trash'])->name('category.trash');
+            Route::post('category/restore-all', [CategoryController::class, 'restoreAll'])->name('category.restoreAll');
+            Route::delete('category/force-delete-all', [CategoryController::class, 'forceDeleteAll'])->name('category.forceDeleteAll');
+            Route::post('category/{id}/restore', [CategoryController::class, 'restore'])->name('category.restore');
+            Route::delete('category/{id}/force-delete', [CategoryController::class, 'forceDelete'])->name('category.forceDelete');
+            Route::resource('category', CategoryController::class);
+            Route::resource('brand', BrandController::class);
+            Route::resource('user', UserController::class);
+            Route::resource('customer', CustomerController::class);
+
+            Route::get('product/trash', [ProductController::class, 'trash'])->name('product.trash');
+            Route::post('product/restore-all', [ProductController::class, 'restoreAll'])->name('product.restoreAll');
+            Route::delete('product/force-delete-all', [ProductController::class, 'forceDeleteAll'])->name('product.forceDeleteAll');
+            Route::post('product/{id}/restore', [ProductController::class, 'restore'])->name('product.restore');
+            Route::delete('product/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('product.forceDelete');
+            Route::resource('product', ProductController::class);
+            Route::resource('post', PostController::class);
+            Route::resource('order', OrderController::class)->only(['index','show','update']);
+        });
+
+        Route::resource('product', ProductController::class)->only(['index'])->middleware('roles:1,2');
+    });
+});
+
+Route::get('/test1', [ProductController::class, 'test1']);
+Route::get('/test2', [ProductController::class, 'test2']);
+
+

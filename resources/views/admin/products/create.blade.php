@@ -1,0 +1,136 @@
+{{-- thừa kế layout/view admin.blade.php --}}
+{{-- resources/views/admin/layouts/admin.blade.php --}}
+@extends('admin.layouts.admin')
+
+{{-- Gán nội dung cho vùng section 'title' --}}
+{{-- (tương ứng với @yield('title') trong layout) --}}
+@section('title', 'Loại Sản phẩm')
+
+{{-- Gán nội dung cho vùng section 'content' --}}
+{{-- (tương ứng với @yield('content') trong layout) --}}
+@section('content')
+<div class="border rounded bg-white p-4 shadow-sm">
+    <h3 class="mb-4">Thêm sản phẩm</h3>
+
+    <x-admin.alert />
+    
+    <form action="{{ route('admin.product.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Tên sản phẩm</label>
+                    <input type="text" name="productname" class="form-control @error('productname') is-invalid @enderror" value="{{ old('productname') }}" required>
+                    @error('productname')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Slug</label>
+                    <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}" required>
+                    @error('slug')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Loại sản phẩm</label>
+                    <select name="cateid" class="form-select @error('cateid') is-invalid @enderror">
+                        <option value="">-- Chọn loại sản phẩm --</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->cateid }}" {{ old('cateid') == $category->cateid ? 'selected' : '' }}>
+                                {{ $category->catename }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('cateid')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Thương hiệu</label>
+                    <select name="brandid" class="form-select @error('brandid') is-invalid @enderror">
+                        <option value="">-- Chọn thương hiệu --</option>
+                        @foreach($brands as $brand)
+                            <option value="{{ $brand->id }}" {{ old('brandid') == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->brandname }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('brandid')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Giá</label>
+                    <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price') }}" required>
+                    @error('price')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Giá khuyến mãi</label>
+                    <input type="number" name="pricediscount" class="form-control @error('pricediscount') is-invalid @enderror" value="{{ old('pricediscount', 0) }}">
+                    @error('pricediscount')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label d-block">Trạng thái</label>
+                    
+                    <input type="radio" class="btn-check" name="status" id="active" value="1" {{ old('status', 1) == 1 ? 'checked' : '' }}>
+                    <label class="btn btn-outline-success" for="active">Hiển thị</label>
+                    
+                    <input type="radio" class="btn-check" name="status" id="inactive" value="0" {{ old('status', 1) == 0 ? 'checked' : '' }}>
+                    <label class="btn btn-outline-danger" for="inactive">Ẩn</label>
+                    @error('status')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Mô tả sản phẩm</label>
+                    <textarea name="description" rows="4" class="form-control summernote @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                    @error('description')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3 img-group">
+                    <label class="form-label">Ảnh chính</label>
+                    <input type="file" name="img" class="form-control img-input @error('img') is-invalid @enderror">
+                    <div class="img-preview mt-2"></div>
+                    @error('img')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3 img-group">
+                    <label class="form-label">Ảnh phụ</label>
+                    <input type="file" name="imgs[]" class="form-control img-input @error('imgs') is-invalid @enderror" multiple>
+                    <div class="img-preview mt-2"></div>
+                    @error('imgs')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    @error('imgs.*')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Lưu sản phẩm</button>
+            <a href="{{ route('admin.product.index') }}" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </form>
+</div>
+@endsection
